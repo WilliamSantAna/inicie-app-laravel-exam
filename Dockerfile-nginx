@@ -1,0 +1,28 @@
+FROM php:8.2-fpm
+
+RUN apt-get update && apt-get install -y \
+    libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev procps \
+    zip unzip curl git net-tools nano \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
+
+RUN git config --global --add safe.directory /var/www/html
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+
+WORKDIR /var/www/html
+
+COPY . .
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer update
+
+RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
+RUN alias ll='ls -tlha'
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
