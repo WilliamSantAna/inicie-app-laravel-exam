@@ -1,11 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TaskController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/check-api', function () {
-    return response()->json(['status' => 'API Route Loaded 1']);
-});
+Route::get('/', fn() => view('welcome'));
+Route::get('/check-api', fn() => response()->json(['status' => 'API working']));
+Route::resource('tasks', TaskController::class);
