@@ -100,7 +100,7 @@ class TaskControllerTest extends TestCase
         $response = $this->putJson(route('tasks.update', $task), $data);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJson(['message' => 'Task updated']);
+        $response->assertJson($task);
     }
 
     #[Test]

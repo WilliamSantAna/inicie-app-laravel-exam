@@ -18,18 +18,16 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = $this->taskRepository->all();
-        return response()->json($tasks);
+        return response()->json($tasks, 200);
     }
 
     public function show(int $id)
     {
-        $task = $this->taskRepository->find($id);
-
-        if (!$task) {
+        if (!($task = $this->taskRepository->find($id))) {
             return response()->json(['message' => 'Task not found'], 404);
         }
 
-        return response()->json($task);
+        return response()->json($task, 200);
     }
 
     public function store(Request $request)
@@ -39,7 +37,9 @@ class TaskController extends Controller
             'status' => 'nullable|string',
         ]);
 
-        $task = $this->taskRepository->create($data);
+        if (!($task = $this->taskRepository->create($data))) {
+            return response()->json(['message' => 'Task not created'], 422);
+        }
         return response()->json($task, 201);
     }
 
@@ -50,23 +50,19 @@ class TaskController extends Controller
             'status' => 'nullable|string',
         ]);
 
-        $updated = $this->taskRepository->update($id, $data);
-
-        if (!$updated) {
+        if (!($task = $this->taskRepository->update($id, $data))) {
             return response()->json(['message' => 'Task not found'], 404);
         }
 
-        return response()->json(['message' => 'Task updated']);
+        return response()->json($task, 200);
     }
 
     public function destroy(int $id)
     {
-        $deleted = $this->taskRepository->delete($id);
-
-        if (!$deleted) {
+        if (!($deleted = $this->taskRepository->delete($id))) {
             return response()->json(['message' => 'Task not found'], 404);
         }
 
-        return response()->json(['message' => 'Task deleted']);
+        return response()->json(null, 204);
     }
 }

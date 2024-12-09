@@ -13,7 +13,7 @@ class TaskFactory extends Factory
     {
         return [
             'title' => $this->faker->word,
-            'status' => $this->faker->randomElement(['pending', 'completed']),
+            'status' => $this->faker->randomElement(['pending', 'in-progress', 'completed']),
         ];
     }
 }
